@@ -1,25 +1,95 @@
 <template>
     <div>
         <div class="title_top">
-            <el-button type="primary" icon="el-icon-edit"></el-button>
-            <el-button type="primary" icon="el-icon-share"></el-button>
-            <el-button type="primary" icon="el-icon-delete"></el-button>
-            <el-button type="primary" icon="el-icon-search">搜索</el-button>
-            <el-button type="primary">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+            <el-button type="primary" icon="el-icon-edit">修改</el-button>
+           <el-popover
+              ref="popover4"
+              placement="bottom-start"
+              width="900"
+              trigger="click">
+               <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" size="small" class="demo-ruleForm">
+                  <div style="float:left;width:350px;margin-left:100px;margin-top:30px">
+                      <el-form-item label="姓名" prop="name">
+                        <el-input v-model="ruleForm.name" class="add_input"></el-input>
+                      </el-form-item>
+                      <el-form-item label="电话" prop="phone">
+                        <el-input v-model="ruleForm.phone" class="add_input"></el-input>
+                      </el-form-item>
+                      <el-form-item label="纹眉" prop="wenmei">
+                        <el-input v-model="ruleForm.wenmei" class="add_input"></el-input>
+                      </el-form-item>
+                      <el-form-item label="美睫" prop="meijie">
+                        <el-input v-model="ruleForm.meijie" class="add_input"></el-input>
+                      </el-form-item>
+                      <el-form-item label="美甲" prop="meijia">
+                        <el-input v-model="ruleForm.meijia" class="add_input"></el-input>
+                      </el-form-item>
+                      <el-form-item label="脱毛" prop="tuomao">
+                        <el-input v-model="ruleForm.tuomao" class="add_input"></el-input>
+                      </el-form-item>
+                      <el-form-item label="祛斑" prop="quban">
+                        <el-input v-model="ruleForm.quban" class="add_input"></el-input>
+                      </el-form-item>
+                  </div>
+                  <div style="float:left;width:350px;margin-top:30px">
+                      <el-form-item label="水光" prop="shuiguang">
+                        <el-input v-model="ruleForm.shuiguang" class="add_input"></el-input>
+                      </el-form-item>
+                      <el-form-item label="瘦脸" prop="shoulian">
+                        <el-input v-model="ruleForm.shoulian" class="add_input"></el-input>
+                      </el-form-item>
+                      <el-form-item label="时间" required>
+                        <el-col :span="12">
+                          <el-form-item prop="data">
+                            <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.data" style="width: 100%;"></el-date-picker>
+                          </el-form-item>
+                        </el-col>
+                      </el-form-item>
+                      <el-form-item label="是否补色" prop="buse">
+                        <el-radio-group v-model="ruleForm.buse">
+                          <el-radio label="是"></el-radio>
+                          <el-radio label="否"></el-radio>
+                        </el-radio-group>
+                      </el-form-item>
+                      <el-form-item label="地址" prop="add">
+                        <el-input v-model="ruleForm.add" class="add_input"></el-input>
+                      </el-form-item>
+                      <el-form-item label="余额" prop="money">
+                        <el-input v-model="ruleForm.money" class="add_input"></el-input>
+                      </el-form-item>
+                  </div>
+                  <div style="clear:both;text-align:center;padding-top:30px;">
+                      <el-form-item>
+                        <el-button type="primary" @click="submitForm('ruleForm')">新增</el-button>
+                        <el-button @click="resetForm('ruleForm')">清空</el-button>
+                      </el-form-item>
+                  </div>
+                </el-form>
+            </el-popover>
+            <el-button  v-popover:popover4  v-popover:popover4 type="primary" icon="el-icon-circle-plus">增加</el-button>
+            <el-button type="primary" icon="el-icon-delete">删除</el-button>
+            <el-input placeholder="请输入内容" v-model="input5" class="input-with-select serch_input">
+                <el-select style="width:130px" v-model="select" slot="prepend" placeholder="请选择">
+                  <el-option label="姓名" value="1"></el-option>
+                  <el-option label="电话" value="2"></el-option>
+                </el-select>
+                <el-button slot="append" icon="el-icon-search"></el-button>
+            </el-input>
          </div>
           <el-table
             :data="tableData"
             border
             style="width: 100%">
             <el-table-column
-              prop="date"
+              prop="data"
               label="日期"
-              width="180">
+              width="120"
+              style="text-align:center">
             </el-table-column>
             <el-table-column
               prop="name"
               label="姓名"
-              width="180">
+              width="120">
             </el-table-column>
             <el-table-column
               prop="phone"
@@ -27,60 +97,175 @@
               width="180">
             </el-table-column>
             <el-table-column
-              prop="type"
-              label="项目"
-              width="180">
+              prop="wenmei"
+              label="纹眉"
+              width="120">
             </el-table-column>
             <el-table-column
-              prop="next"
-              label="下次补色"
-              width="180">
+              prop="meijia"
+              label="美睫"
+              width="120">
             </el-table-column>
             <el-table-column
-              prop="address"
+              prop="meijia"
+              label="美甲"
+              width="120">
+            </el-table-column>
+            <el-table-column
+              prop="tuomao"
+              label="脱毛"
+              width="120">
+            </el-table-column>
+            <el-table-column
+              prop="quban"
+              label="祛斑"
+              width="120">
+            </el-table-column>
+            <el-table-column
+              prop="shuiguang"
+              label="水光"
+              width="120">
+            </el-table-column>
+            <el-table-column
+              prop="shoulian"
+              label="瘦脸"
+              width="120">
+            </el-table-column>
+            <el-table-column
+              prop="buse"
+              label="是否补色"
+              width="60">
+            </el-table-column>
+            <el-table-column
+              prop="add"
               label="地址">
             </el-table-column>
+            <el-table-column
+              prop="money"
+              label="余额"
+              width="120">
+            </el-table-column>
           </el-table>
+          <div class="block">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage4"
+              :page-sizes="[100, 200, 300, 400]"
+              :page-size="100"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="400">
+            </el-pagination>
+          </div>
+          
     </div>
 </template>
 
 <script>
+import axios from 'axios';
+    
   export default {
     data() {
       return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-            type:"眉毛",
-          next:"2017-10-06",
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-             type:"眉毛",
-            next:"2017-10-06",
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-            type:"眉毛",
-            next:"2017-10-06",
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-            type:"眉毛",
-            next:"2017-10-06",
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        tableData:[1,2],
+        input5:'',
+        select:'',
+        currentPage4: 4,
+        ruleForm: {
+        name: '',
+        phone: '',
+        data: '',
+        buse:'',
+        meijia:'',
+        meijie:'',
+        wenmei:'',
+        add:'',
+        tuomao:'',
+        quban:'',
+        shoulian:'',
+        shuiguang:'',
+        money:''
+        },
+        rules: {
+          name: [
+            { required: true, message: '请输入姓名', trigger: 'blur' },
+            { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'blur' }
+          ],
+          phone: [
+            { required: true, message: '请输入手机号', trigger: 'blur' },
+            { min: 11, max: 11, message: '11位手机号', trigger: 'blur' }
+          ],
+          data: [
+            { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          ],
+          buse: [
+            { required: true, message: '请选择是否补色', trigger: 'blur' }
+          ]
+        }
+      }
+    },
+    created(){
+        this.getData()
+    },
+    methods: {
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+          console.log(this,222)
+      },
+//        初始化数据
+      async getData(){
+            var d=await axios.get('http://localhost:3000/yanxi/find')
+            this.tableData=d.data;
+//            console.log(this.tableData,)
+        },
+//        增加数据
+      addData(data){
+        axios.get('http://localhost:3000/yanxi/add',data)
+            .then(function(response){
+            console.log("增加成功");
+            }).catch(function(err){
+                    console.log(err);
+            });
+//            this.tableData=data;
+//            console.log(this.tableData,)
+        },
+//        增加
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+//            alert('submit!');
+              addData(this.ruleForm)
+              console.log(this.ruleForm)
+          } else {
+//            console.log('error submit!!');
+            return false;
+          }
+        });
+        },
+//        清空
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
       }
     }
-  }
+}
 </script>
 <style scoped>
     .title_top{
         width: 100%;
         text-align: left;
         line-height: 70px;
+    }
+    .serch_input{
+        width: 430px;
+/*        outline: none;*/
+  }
+    .input-with-select .el-input-group__prepend {
+        background-color: #fff;
+  }
+    .add_input{
+        width: 200px;
     }
 </style>
