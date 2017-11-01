@@ -38,11 +38,14 @@
                       <el-form-item label="瘦脸" prop="shoulian">
                         <el-input v-model="ruleForm.shoulian" class="add_input"></el-input>
                       </el-form-item>
-                      <el-form-item label="时间" required>
+                      <el-form-item label="时间">
                         <el-col :span="12">
-                          <el-form-item prop="data">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.data" style="width: 100%;"></el-date-picker>
-                          </el-form-item>
+                            <el-date-picker
+                              v-model="ruleForm.data"
+                              type="date"
+                              placeholder="选择日期"
+                              value-format="yyyy-MM-dd">
+                            </el-date-picker>
                         </el-col>
                       </el-form-item>
                       <el-form-item label="是否补色" prop="buse">
@@ -151,13 +154,12 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               :current-page="currentPage4"
-              :page-sizes="[100, 200, 300, 400]"
-              :page-size="100"
+              :page-sizes="[5, 10, 15, 20]"
+              :page-size="5"
               layout="total, sizes, prev, pager, next, jumper"
               :total="400">
             </el-pagination>
           </div>
-          
     </div>
 </template>
 
@@ -195,9 +197,6 @@ import axios from 'axios';
             { required: true, message: '请输入手机号', trigger: 'blur' },
             { min: 11, max: 11, message: '11位手机号', trigger: 'blur' }
           ],
-          data: [
-            { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-          ],
           buse: [
             { required: true, message: '请选择是否补色', trigger: 'blur' }
           ]
@@ -219,30 +218,26 @@ import axios from 'axios';
       async getData(){
             var d=await axios.get('http://localhost:3000/yanxi/find')
             this.tableData=d.data;
-//            console.log(this.tableData,)
         },
-//        增加数据
-      addData(data){
-        axios.get('http://localhost:3000/yanxi/add',data)
-            .then(function(response){
-            console.log("增加成功");
-            }).catch(function(err){
-                    console.log(err);
-            });
-//            this.tableData=data;
-//            console.log(this.tableData,)
-        },
-//        增加
+//        点击增加
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-//            alert('submit!');
-              addData(this.ruleForm)
-              console.log(this.ruleForm)
+//            this.ruleForm.data=this.ruleForm.data   .slice(0,11)
+              console.log(this.ruleForm.data)
+            axios.get('http://localhost:3000/yanxi/add',{params:this.ruleForm})
+                .then(function(response){
+
+                console.log("增加成功");
+                }).catch(function(err){
+                        console.log(err);
+                });
           } else {
 //            console.log('error submit!!');
             return false;
           }
+//                刷新表格
+                this.getData()
         });
         },
 //        清空

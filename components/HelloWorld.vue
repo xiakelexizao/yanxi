@@ -1,7 +1,6 @@
 <template>
   <div>
-     <button @click="add"></button>
-     <span>大爷</span>
+     <span>欢迎使用管理系统</span>
   </div>
 </template>
 
@@ -16,12 +15,7 @@ export default {
   },
     methods:{
        add(){
-           axios.get('http://localhost:3000/yanxi/find')
-        .then(function(response){
-          console.log(response,99);
-        }).catch(function(err){
-          console.log(err);
-        });
+console.log(this.value11)
        }
     }
 }
