@@ -23,15 +23,20 @@
                       <el-menu-item index="/customer">客户资料</el-menu-item>
                       <el-menu-item index="1-2">充值管理</el-menu-item>
                       <el-menu-item index="1-3">补色管理</el-menu-item>
+                      <el-menu-item index="1-4">预约管理</el-menu-item>
                     </el-menu-item-group>
                   </el-submenu>
                   <el-menu-item index="2">
                     <i class="el-icon-menu"></i>
-                    <span slot="title">导航二</span>
+                    <span slot="title">库存管理</span>
                   </el-menu-item>
                   <el-menu-item index="3">
-                    <i class="el-icon-setting"></i>
-                    <span slot="title">导航三</span>
+                    <i class="el-icon-menu"></i>
+                    <span slot="title">财务统计</span>
+                  </el-menu-item>
+                  <el-menu-item index="4">
+                    <i class="el-icon-menu"></i>
+                    <span slot="title">系统设置</span>
                   </el-menu-item>
                 </el-menu>
               </el-col>
@@ -41,7 +46,9 @@
           <el-main>
               <router-view/>
           </el-main>
-          <el-footer>版权</el-footer>
+          <el-footer>
+              版权@妍浠美妆 V1.0
+          </el-footer>
         </el-container>
       </el-container>
     </el-container>
@@ -52,10 +59,10 @@ export default {
   name: 'app',
   methods:{
       handleOpen(key, keyPath) {
-        console.log(key, keyPath);
+//        console.log(key, keyPath);
       },
       handleClose(key, keyPath) {
-        console.log(key, keyPath);
+//        console.log(key, keyPath);
       }
 }
 }

@@ -69,7 +69,7 @@
                   </div>
                 </el-form>
             </el-popover>
-            <el-button @click="update"  v-popover:popover3 type="primary" icon="el-icon-edit">修改</el-button>
+            <el-button @click="update" v-popover:popover3 type="primary" icon="el-icon-edit">修改</el-button>
             <el-popover
               ref="popover4"
               placement="bottom-start"
@@ -151,6 +151,7 @@
             :data="tableData"
             border
             ref="multipleTable"
+            :default-sort = "{prop:'data', order: 'descending'}"
             @selection-change="handleSelectionChange"
             style="width: 100%">
             <el-table-column
@@ -161,6 +162,7 @@
               prop="data"
               label="日期"
               width="120"
+              sortable
               style="text-align:center">
             </el-table-column>
             <el-table-column
@@ -211,6 +213,9 @@
             <el-table-column
               prop="buse"
               label="是否补色"
+              :filters="[{ text: '是', value: '是' }, { text: '否', value: '否'}]"
+              :filter-method="filterTag"
+              filter-placement="bottom-end"
               width="60">
             </el-table-column>
             <el-table-column
@@ -244,15 +249,18 @@ import axios from 'axios';
     data() {
       return {
         updateShow:true,
+        addShow:false,
         tableData:[1,2],
         input5:'',
         select:'',
         searchData:{},
-        curpage:5,
+        curpage:1,
         total:1,
         eachpage:5,
         multipleSelection:[],
         upData:[],
+        name:"",
+        phone:"",
         ruleForm: {
         name: '',
         phone: '',
@@ -284,16 +292,24 @@ import axios from 'axios';
       }
     },
     created(){
-        this.getData(1,5)
+        this.getData(1,5,this.name,this.phone)
     },
     methods: {
+      formatter(row, column) {
+//          console.log(row,column,1)
+        return row.buse;
+      },
+      filterTag(value, row) {
+//          console.log(value,row,2)
+        return row.buse == value;
+      },
       handleSizeChange(val) {
 //        console.log(`每页 ${val} 条`);
-          this.getData(1,val)
+          this.getData(this.curpage,val,this.name,this.phone)
       },
       handleCurrentChange(val) {
 //        console.log(`当前页: ${val}`);
-          this.getData(val,5)
+          this.getData(val,this.eachpage,this.name,this.phone)
       },
 //        选择
       handleSelectionChange(val) {
@@ -305,10 +321,12 @@ import axios from 'axios';
           this.upData=val;
       },
 //        初始化数据
-      async getData(page,rows){
+      async getData(page,rows,name,phone){
             var d=await axios.get('http://localhost:3000/yanxi/find',{params:{
                 page,
-                rows
+                rows,
+                name,
+                phone
             }})
             this.tableData=d.data.rows;
             this.total=d.data.total;
@@ -321,13 +339,17 @@ import axios from 'axios';
                 ids:this.multipleSelection
             }})
                 .then(function(response){
-
-                console.log("删除成功");
+                     
+//                console.log("删除成功");
                 }).catch(function(err){
                         console.log(err);
                 });
 //                刷新表格
-          this.getData()
+          this.getData(this.curpage,this.eachpage,this.name,this.phone)
+          this.$message({
+                      message: '姐，真替你可惜',
+                      type: 'success'
+                    });
         },
 //        点击增加
       submitForm(formName) {
@@ -337,8 +359,8 @@ import axios from 'axios';
 //              console.log(this.ruleForm.data)
             axios.get('http://localhost:3000/yanxi/add',{params:this.ruleForm})
                 .then(function(response){
-
-                console.log("增加成功");
+                     
+//                console.log("增加成功");
                 }).catch(function(err){
                         console.log(err);
                 });
@@ -347,7 +369,12 @@ import axios from 'axios';
             return false;
           }
 //                刷新表格
-                this.getData(this.curpage,this.eachpage)
+                this.getData(this.curpage,this.eachpage,this.name,this.phone);
+                this.addShow=true;
+                this.$message({
+                      message: '姐，恭喜你又多一个客户',
+                      type: 'success'
+                    });
         });
         },
 //        清空
@@ -359,10 +386,18 @@ import axios from 'axios';
 //          console.log(this.upData.length)
           if(this.upData.length==0){
               this.updateShow=true
-              alert("请选择修改项")
+              this.$message({
+                  message: '姐，必须至少选择一项',
+                  type: 'warning'
+                });
+//              alert("请选择修改项")
           }else if(this.upData.length>1){
               this.updateShow=true
-              alert("只能同时修改一个")
+              this.$message({
+                  message: '姐，只能同时修改一个',
+                  type: 'warning'
+                });
+//              alert("只能同时修改一个")
           }else{
               this.updateShow=false;
               this.ruleForm=this.upData[0]
@@ -374,7 +409,8 @@ import axios from 'axios';
               if (valid) {
                 axios.get('http://localhost:3000/yanxi/update',{params:this.ruleForm})
                     .then(function(response){
-                    console.log("保存成功");
+//                    console.log("保存成功");
+                    
                     }).catch(function(err){
                             console.log(err);
                     });
@@ -383,27 +419,39 @@ import axios from 'axios';
                 return false;
               }
     //                刷新表格
-                    this.getData(this.curpage,this.eachpage)
+                    this.getData(this.curpage,this.eachpage,this.name,this.phone);
+                    this.updateShow=true;
+                    this.$message({
+                          message: '姐，修改成功',
+                          type: 'success'
+                        });
             });
         },
 //        搜索
         async search(){
-            console.log(this.input5,this.select)
+//            console.log(this.input5,this.select)
             if(this.select==1){
+                this.name=this.input5;
+                this.phone="";
                 this.searchData={
-                    name:this.input5
+                    name:this.input5,
+                    page:this.curpage,
+                    rows:this.eachpage
                 }
             }else if(this.select==2){
+                this.phone=this.input5;
+                this.name="";
                 this.searchData={
-                    phone:this.input5
+                    phone:this.input5,
+                    page:this.curpage,
+                    rows:this.eachpage
                 }
             }
-            var d=await axios.get('http://localhost:3000/yanxi/find',{params:{this.curpage,this.eachpage,this.searchData}})
+            var d=await axios.get('http://localhost:3000/yanxi/find',{params:this.searchData})
             this.tableData=d.data.rows;
             this.total=d.data.total;
             this.curpage=d.data.curpage;
             this.eachpage=d.data.eachpage;
-            console.log(d.data.rows,this.searchData)
         }
     }
 }
